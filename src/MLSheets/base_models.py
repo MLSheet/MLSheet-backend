@@ -7,10 +7,21 @@ ColumnNames = Union[List[str], Tuple[str, ...]]
 ColumnIndexes = Union[List[int], Tuple[int, ...]]
 
 
-class DataframeSpec(BaseModel):
+class Transform(BaseModel):
+    name: Union[str, None] = None
+    type: Union[str, None] = None
+    order: int = 0
+
+
+class ColumnTransform(BaseModel):
+    column_index: int
+    transforms: List[Transform]
+
+
+class TransformSpec(BaseModel):
     id: str
-    columns: Union[ColumnNames, ColumnIndexes, None]
-    rows: Range
+    columns_transforms: List[ColumnTransform]
+    dataframe_transforms: List[Transform]
 
 
 class ApiResponse(BaseModel):

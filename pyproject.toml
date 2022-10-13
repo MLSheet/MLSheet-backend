@@ -1,14 +1,14 @@
 [tool.poetry]
-name = "eMeL"
+name = "MLSheets"
 version = "0.1.0"
 description = "ML with a familiar face"
 authors = ["Peter Vyboch <pvyboch1@gmail.com>"]
 license = "MIT"
-repository = 'https://github.com/petereon/eMeL'
+repository = 'https://github.com/petereon/MLSheets'
 readme = 'README.md'
 keywords = ["python"]
 classifiers = ['License :: OSI Approved :: MIT License', 'Programming Language :: Python :: 3']
-packages = [{ include = "eMeL", from = "src" }]
+packages = [{ include = "MLSheets", from = "src" }]
 
 [tool.poe]
 verbosity = -1
