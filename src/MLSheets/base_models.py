@@ -1,5 +1,6 @@
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
+import pandas as pd
 from pydantic import BaseModel
 
 Range = Tuple[Union[int, None], Union[int, None]]
@@ -24,8 +25,17 @@ class TransformSpec(BaseModel):
     dataframe_transforms: List[Transform]
 
 
+class StoredDataFrame(BaseModel):
+    id: str
+    name: str
+    df: pd.DataFrame
+
+    class Config:
+        arbitrary_types_allowed = True
+
+
 class ApiResponse(BaseModel):
     success: bool
-    data: Union[Dict, List]
+    data: Any
     err: Optional[str]
     msg: Optional[str]

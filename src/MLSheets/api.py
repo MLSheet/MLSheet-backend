@@ -2,7 +2,7 @@ from typing import List, Union
 from uuid import uuid4
 
 import pandas as pd  # type: ignore
-from fastapi import FastAPI, Response, UploadFile, status
+from fastapi import FastAPI, Form, Response, UploadFile, status
 from fastapi.middleware.cors import CORSMiddleware
 
 from MLSheets.base_models import ApiResponse, TransformSpec
@@ -19,7 +19,7 @@ app.add_middleware(CORSMiddleware, allow_origins=['*'])
 
 
 @app.post('/upload-csv/')
-async def api_upload_csv(file: UploadFile, response: Response) -> ApiResponse:
+async def api_upload_csv(file: UploadFile, response: Response, df_name: str = Form()) -> ApiResponse:
     try:
         df = pd.read_csv(file.file)
     except Exception as ex:
@@ -27,14 +27,19 @@ async def api_upload_csv(file: UploadFile, response: Response) -> ApiResponse:
         return ApiResponse(success=False, data=None, err='PARSING_FAILED', msg=str(ex))
     df_id = str(uuid4())
     try:
-        await store_dataframe(df, df_id)
+        await store_dataframe(df, df_id, df_name)
     except Exception as ex:
         return ApiResponse(success=False, data=None, err='DATAFRAME_STORING_FAILED', msg=str(ex))
     return ApiResponse(success=True, data={'id': df_id}, err=None, msg=None)
 
 
 @app.post('/upload-excel/')
-async def api_upload_excel(file: UploadFile, response: Response, sheets: Union[List[int], List[str], None] = None) -> ApiResponse:
+async def api_upload_excel(
+    file: UploadFile,
+    response: Response,
+    df_name: str = Form(),
+    sheets: Union[List[int], List[str], None] = None,
+) -> ApiResponse:
     try:
         df = pd.read_excel(file.file, sheet_name=sheets)
     except Exception as ex:
@@ -42,7 +47,7 @@ async def api_upload_excel(file: UploadFile, response: Response, sheets: Union[L
         return ApiResponse(success=False, data=None, err='DATA_PARSING_FAILED', msg=str(ex))
     df_id = str(uuid4())
     try:
-        await store_dataframe(df, df_id)
+        await store_dataframe(df, df_id, df_name)
     except Exception as ex:
         return ApiResponse(success=False, data=None, err='DATAFRAME_STORING_FAILED', msg=str(ex))
     return ApiResponse(success=True, data={'id': df_id}, err=None, msg=None)
@@ -50,7 +55,8 @@ async def api_upload_excel(file: UploadFile, response: Response, sheets: Union[L
 
 @app.get('/dataframes')
 async def api_get_dataframes() -> ApiResponse:
-    return ApiResponse(success=True, data=get_dataframes(), err=None, msg=None)
+    print(await get_dataframes())
+    return ApiResponse(success=True, data=await get_dataframes(), err=None, msg=None)
 
 
 @app.get('/dataframes/{df_id}')
