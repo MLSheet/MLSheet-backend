@@ -1,6 +1,6 @@
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, List, Optional, Tuple, Union
 
-import pandas as pd
+import pandas as pd  # type: ignore
 from pydantic import BaseModel
 
 Range = Tuple[Union[int, None], Union[int, None]]
