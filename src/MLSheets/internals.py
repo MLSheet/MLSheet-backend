@@ -21,12 +21,12 @@ async def get_dataframe_from_id(df_id: str) -> pd.DataFrame:
 
 async def get_dataframes() -> List[Dict[str, str]]:
     global dataframes
-    return [{'id': stored_df.id, 'name': stored_df.name} for stored_df in dataframes.values()]
+    return [{'id': stored_df.id, 'name': stored_df.name, 'timestamp': stored_df.timestamp} for stored_df in dataframes.values()]
 
 
-async def store_dataframe(df: pd.DataFrame, df_id: str, df_name: str) -> None:
+async def store_dataframe(df: pd.DataFrame, df_id: str, df_name: str, timestamp: str) -> None:
     global dataframes
-    dataframes[df_id] = StoredDataFrame(id=df_id, name=df_name, df=df)
+    dataframes[df_id] = StoredDataFrame(id=df_id, name=df_name, df=df, timestamp=timestamp)
 
 
 def preformat_dataframe(df: pd.DataFrame) -> Dict:

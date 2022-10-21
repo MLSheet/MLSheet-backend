@@ -1,7 +1,8 @@
+from datetime import datetime
 from typing import Any, List, Optional, Tuple, Union
 
 import pandas as pd  # type: ignore
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 Range = Tuple[Union[int, None], Union[int, None]]
 ColumnNames = Union[List[str], Tuple[str, ...]]
@@ -28,7 +29,13 @@ class TransformSpec(BaseModel):
 class StoredDataFrame(BaseModel):
     id: str
     name: str
+    timestamp: str
     df: pd.DataFrame
+
+    @validator('timestamp')
+    def timestamp_must_be_iso_formatted(cls, val):  # type: ignore
+        datetime.strptime(val, '%Y-%m-%dT%H:%M:%SZ')
+        return val
 
     class Config:
         arbitrary_types_allowed = True

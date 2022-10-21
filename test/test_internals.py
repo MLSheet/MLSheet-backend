@@ -30,7 +30,7 @@ async def _():
 
 @test('Getting DataFrame that exists')
 async def _():
-    test_dataframe = StoredDataFrame(id="1", name="test", df=DataFrame([0,1,2,3]))
+    test_dataframe = StoredDataFrame(id="1", name="test", timestamp='2019-01-04T16:41:24Z', df=DataFrame([0,1,2,3]))
     with mock.patch('MLSheets.internals.dataframes', {'1': test_dataframe}):
         expect((await get_dataframe_from_id('1')).to_dict()).to.be_equal_to({0: {0: 0, 1: 1, 2: 2, 3: 3}})
 
@@ -42,15 +42,15 @@ async def _():
 
 @test('Getting all DataFrames')
 async def _():
-    test_dataframe = StoredDataFrame(id="1", name="test", df=DataFrame())
+    test_dataframe = StoredDataFrame(id="1", name="test", timestamp='2019-01-04T16:41:24Z', df=DataFrame())
     with mock.patch('MLSheets.internals.dataframes', {'1': test_dataframe}):
-        expect(await get_dataframes()).to.be_equal_to([{'id': '1', 'name': 'test'}])
+        expect(await get_dataframes()).to.be_equal_to([{'id': '1', 'name': 'test', 'timestamp': '2019-01-04T16:41:24Z'}])
 
 @test('Storing a DataFrame')
 async def _():
     with mock.patch('MLSheets.internals.dataframes', {'1': 'DataFrame'}) as mock_dataframes:
         test_df = DataFrame()
-        await store_dataframe(test_df, '2', 'Jozo')
+        await store_dataframe(test_df, '2', 'Jozo', '2019-01-04T16:41:24Z')
         expect(mock_dataframes.keys()).to.contain(('2'))
         expect(list(mock_dataframes.values())[1]).to.be_of_type(StoredDataFrame)
 
